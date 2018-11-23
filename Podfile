@@ -23,6 +23,7 @@ target 'The Blue Alliance' do
 
   # Deps
   pod 'BFRImageViewer'
+  pod 'HMSegmentedControl'
   pod 'PureLayout'
   pod 'youtube-ios-player-helper'
   pod 'ZIPFoundation'

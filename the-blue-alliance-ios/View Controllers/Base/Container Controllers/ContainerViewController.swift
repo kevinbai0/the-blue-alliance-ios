@@ -1,6 +1,7 @@
-import Foundation
-import UIKit
 import CoreData
+import Foundation
+import HMSegmentedControl
+import UIKit
 
 protocol NavigationTitleDelegate: AnyObject {
     func navigationTitleTapped()
@@ -67,18 +68,14 @@ class ContainerViewController: UIViewController, Persistable, Alertable {
     }()
     weak var navigationTitleDelegate: NavigationTitleDelegate?
 
-    private let shouldShowSegmentedControl: Bool = false
-    private lazy var segmentedControlView: UIView = {
-        let segmentedControlView = UIView(forAutoLayout: ())
-        segmentedControlView.autoSetDimension(.height, toSize: 44.0)
-        segmentedControlView.backgroundColor = .primaryBlue
-        segmentedControlView.addSubview(segmentedControl)
-        segmentedControl.autoAlignAxis(toSuperviewAxis: .horizontal)
-        segmentedControl.autoPinEdge(toSuperviewEdge: .leading, withInset: 16.0)
-        segmentedControl.autoPinEdge(toSuperviewEdge: .trailing, withInset: 16.0)
-        return segmentedControlView
-    }()
-    private let segmentedControl: UISegmentedControl
+    private var segmentedControl: HMSegmentedControl? {
+        didSet {
+            guard let segmentedControl = segmentedControl else {
+                return
+            }
+            segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
 
     private let containerView: UIView = UIView()
     private let viewControllers: [ContainableViewController]
@@ -92,14 +89,21 @@ class ContainerViewController: UIViewController, Persistable, Alertable {
         self.navigationTitle = navigationTitle
         self.navigationSubtitle = navigationSubtitle
 
-        segmentedControl = UISegmentedControl(items: segmentedControlTitles)
-        segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.tintColor = .white
+        if let segmentedControlTitles = segmentedControlTitles {
+            segmentedControl = HMSegmentedControl(sectionTitles: segmentedControlTitles)
+            segmentedControl!.backgroundColor = .primaryBlue
+            segmentedControl!.tintColor = .white
+        }
+
+//        segmentedControl = UISegmentedControl(items: segmentedControlTitles)
+//        segmentedControl.selectedSegmentIndex = 0
+//        segmentedControl.tintColor = .white
 
         super.init(nibName: nil, bundle: nil)
 
-        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
+        if let segmentedControl = segmentedControl {
+            segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
+        }
 
         if let navigationTitle = navigationTitle, let navigationSubtitle = navigationSubtitle {
             navigationTitleLabel.text = navigationTitle
@@ -117,10 +121,11 @@ class ContainerViewController: UIViewController, Persistable, Alertable {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Remove segmentedControl if we don't need one
+        // Add segmentedControl if we need one
         var arrangedSubviews = [containerView]
-        if segmentedControl.numberOfSegments > 1 {
-            arrangedSubviews.insert(segmentedControlView, at: 0)
+        if let segmentedControl = segmentedControl {
+            arrangedSubviews.insert(segmentedControl, at: 0)
+            segmentedControl.autoSetDimension(.height, toSize: 44.0)
         }
 
         let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
@@ -167,7 +172,7 @@ class ContainerViewController: UIViewController, Persistable, Alertable {
     public func currentViewController() -> ContainableViewController? {
         if viewControllers.count == 1, let viewController = viewControllers.first {
             return viewController
-        } else if viewControllers.count > segmentedControl.selectedSegmentIndex {
+        } else if let segmentedControl = segmentedControl, viewControllers.count > segmentedControl.selectedSegmentIndex {
             return viewControllers[segmentedControl.selectedSegmentIndex]
         }
         return nil
