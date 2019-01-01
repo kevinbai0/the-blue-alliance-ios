@@ -1,4 +1,5 @@
 import CoreData
+import CoreSpotlight
 import Crashlytics
 import Firebase
 import FirebaseAuth
@@ -119,6 +120,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.setupAppearance()
 
+        CSSearchableIndex.default().deleteAllSearchableItems(completionHandler: nil)
+
         // Setup a dummy launch screen in our window while we're doing setup tasks
         window = UIWindow()
         guard let window = window else {
@@ -221,6 +224,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return GIDSignIn.sharedInstance().handle(url,
                                                  sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
                                                  annotation: options[UIApplication.OpenURLOptionsKey.annotation])
+    }
+
+    // MARK: Search Delegate Methods
+
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        // pass
+        print("Continue User Activity")
+        print(userActivity.userInfo)
+        return true
     }
 
     // MARK: Push Delegate Methods

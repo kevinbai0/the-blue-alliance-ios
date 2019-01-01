@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CoreSpotlight
 
 public enum EventType: Int {
     case regional = 0
@@ -350,7 +351,12 @@ extension Event: Locatable, Managed {
                 $0.removeFromEvents(self)
             }
         })
+
+        // Remove from our search index
+        CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [key!], completionHandler: nil)
     }
+
+    // Misc Methods
 
     // hybridType is used a mechanism for sorting Events properly in fetch result controllers... they use a variety
     // of event data to kinda "move around" events in our data model to get groups/order right
@@ -637,7 +643,6 @@ extension Event: Comparable {
 
 }
 
-
 extension Event: MyTBASubscribable {
 
     var modelKey: String {
@@ -658,6 +663,40 @@ extension Event: MyTBASubscribable {
             NotificationType.scheduleUpdated,
             NotificationType.matchVideo
         ]
+    }
+
+}
+
+extension Event: Searchable {
+
+    var searchKey: String {
+        return key!
+    }
+
+    var searchAttributes: CSSearchableItemAttributeSet {
+        let attributeSet = CSSearchableItemAttributeSet(itemContentType: Event.entityName)
+
+        attributeSet.displayName = "\(year!) \(name!)"
+
+        // Date-related event stuff
+        attributeSet.startDate = startDate
+        attributeSet.endDate = endDate
+        attributeSet.allDay = NSNumber(value: 1)
+
+        // General stuff
+        attributeSet.alternateNames = [shortName, name].compactMap({ $0 }) // Queryable by short name or name
+
+        // If we have a myTBA favorite for this Event, it's user curated and should rank higher in search
+        if let managedObjectContext = managedObjectContext {
+            let favorite = Favorite.findOrFetch(in: managedObjectContext, matching: Favorite.favoritePredicate(modelKey: key!, modelType: .event))
+            attributeSet.userCurated = favorite != nil ? NSNumber(value: 1) : nil
+        }
+
+        return attributeSet
+    }
+
+    var webURL: URL {
+        return URL(string: "https://www.thebluealliance.com/event/\(key!)")!
     }
 
 }

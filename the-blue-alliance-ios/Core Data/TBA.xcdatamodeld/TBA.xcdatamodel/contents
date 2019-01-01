@@ -40,7 +40,7 @@
         <relationship name="eventPoints" toMany="YES" deletionRule="Cascade" destinationEntity="DistrictEventPoints" inverseName="districtRanking" inverseEntity="DistrictEventPoints" syncable="YES"/>
         <relationship name="teamKey" maxCount="1" deletionRule="Nullify" destinationEntity="TeamKey" inverseName="districtRankings" inverseEntity="TeamKey" syncable="YES"/>
     </entity>
-    <entity name="Event" representedClassName="Event" syncable="YES" codeGenerationType="class">
+    <entity name="Event" representedClassName="Event" syncable="YES" codeGenerationType="class" coreSpotlightDisplayNameExpression="name">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
@@ -210,7 +210,7 @@
     <entity name="Subscription" representedClassName="Subscription" parentEntity="MyTBAEntity" syncable="YES" codeGenerationType="class">
         <attribute name="notificationsRaw" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
     </entity>
-    <entity name="Team" representedClassName="Team" syncable="YES" codeGenerationType="class">
+    <entity name="Team" representedClassName="Team" syncable="YES" codeGenerationType="class" coreSpotlightDisplayNameExpression="name">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>

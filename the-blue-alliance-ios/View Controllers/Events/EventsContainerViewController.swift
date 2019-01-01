@@ -11,6 +11,10 @@ class EventsContainerViewController: ContainerViewController {
     private(set) var year: Int
     private(set) var eventsViewController: WeekEventsViewController
 
+    lazy var searchBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(named: "ic_search_white"), style: .plain, target: self, action: #selector(presentSearch))
+    }()
+
     // MARK: - Init
 
     init(myTBA: MyTBA, statusService: StatusService, urlOpener: URLOpener, persistentContainer: NSPersistentContainer, tbaKit: TBAKit, userDefaults: UserDefaults) {
@@ -30,6 +34,7 @@ class EventsContainerViewController: ContainerViewController {
 
         title = "Events"
         tabBarItem.image = UIImage(named: "ic_event")
+        navigationItem.rightBarButtonItem = searchBarButtonItem
 
         navigationTitleDelegate = self
         eventsViewController.delegate = self
@@ -53,6 +58,10 @@ class EventsContainerViewController: ContainerViewController {
     private func updateInterface() {
         navigationTitle = EventsContainerViewController.eventsTitle(eventsViewController.weekEvent)
         navigationSubtitle = ContainerViewController.yearSubtitle(year)
+    }
+
+    @objc private func presentSearch() {
+        // Something here
     }
 
 }

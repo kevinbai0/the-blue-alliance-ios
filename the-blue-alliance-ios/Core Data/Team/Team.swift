@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CoreSpotlight
 
 extension Team: Locatable, Managed {
 
@@ -178,6 +179,36 @@ extension Team: MyTBASubscribable {
             NotificationType.awards,
             NotificationType.matchVideo
         ]
+    }
+
+}
+
+extension Team: Searchable {
+
+    var searchKey: String {
+        return key!
+    }
+
+    var searchAttributes: CSSearchableItemAttributeSet {
+        // TODO: Check if this is okay
+        let attributeSet = CSSearchableItemAttributeSet(itemContentType: Team.entityName)
+        attributeSet.displayName = "Team \(teamNumber!) - \(nickname!)"
+
+        // General stuff
+        // Queryable by name, nickname, 'Team XXXX', or 'XXXX'
+        attributeSet.alternateNames = [name, "Team \(teamNumber!.stringValue)", teamNumber?.stringValue, nickname].compactMap({ $0 })
+
+        // If we have a myTBA favorite for this Team, it's user curated and should rank higher in search
+        if let managedObjectContext = managedObjectContext {
+            let favorite = Favorite.findOrFetch(in: managedObjectContext, matching: Favorite.favoritePredicate(modelKey: key!, modelType: .event))
+            attributeSet.userCurated = favorite != nil ? NSNumber(value: 1) : nil
+        }
+
+        return attributeSet
+    }
+
+    var webURL: URL {
+        return URL(string: "https://www.thebluealliance.com/team/\(teamNumber!.stringValue)")!
     }
 
 }

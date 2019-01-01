@@ -66,6 +66,24 @@ class EventViewController: MyTBAContainerViewController, EventStatusSubscribable
         }
     }
 
+    // MARK: - Private Methods
+
+    /// Index that a user has viewd this event (used for search)
+    private func indexUserActivity() {
+        let activity = NSUserActivity(activityType: "com.the-blue-aliance.tba")
+        activity.title = "" // TODO: Make the same as our displayName for the other search
+        activity.webpageURL = event.webURL // Important to link our user activity to our web markup
+
+        activity.isEligibleForPublicIndexing = true
+        activity.isEligibleForSearch = true
+
+        // activity.contentAttributeSet = // Can we share here??
+        // TODO: requiredUserInfo, used for restoration
+        // activity.userInfo
+
+        activity.becomeCurrent() // todo: resignCurrent
+    }
+
 }
 
 extension EventViewController: EventInfoViewControllerDelegate {
