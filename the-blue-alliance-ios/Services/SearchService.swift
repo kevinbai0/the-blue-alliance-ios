@@ -15,16 +15,7 @@ import Foundation
  */
 class SearchService {
 
-    // TODO: HEAD for each page?
-    private func fetchTeams() {
-
-    }
-
-    private func fetchEvents() {
-
-    }
-
-    func addToSearchIndex(_ items: [Searchable]) {
+    static func addToSearchIndex(_ items: [Searchable]) {
         guard CSSearchableIndex.isIndexingAvailable() else { return }
 
         // These things will expire after a month... how do we make sure they don't? Or that they stay fresh?
@@ -34,6 +25,8 @@ class SearchService {
             attributes.relatedUniqueIdentifier = item.searchKey
             return CSSearchableItem(uniqueIdentifier: item.searchKey, domainIdentifier: nil, attributeSet: attributes)
         })
+
+        print("Indexing \(items.map({ $0.searchKey }))")
         CSSearchableIndex.default().indexSearchableItems(searchableItems) { (error) in
             if let error = error {
                 Crashlytics.sharedInstance().recordError(error)
@@ -41,7 +34,7 @@ class SearchService {
         }
     }
 
-    func removeFromSearchIndex(_ item: Searchable) {
+    static func removeFromSearchIndex(_ item: Searchable) {
         CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [item.searchKey], completionHandler: nil)
     }
 

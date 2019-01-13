@@ -51,14 +51,24 @@ extension Team: Locatable, Managed {
         }
 
         // Insert new Teams for this page
-        let teams = teams.map({
-            return Team.insert($0, in: context)
-        })
+        let teams = Team.insert(teams, in: context)
 
         // Delete orphaned Teams for this year
         Set(oldTeams).subtracting(Set(teams)).forEach({
             context.delete($0)
         })
+
+        SearchService.addToSearchIndex(teams)
+    }
+
+    static func insert(_ teams: [TBATeam], in context: NSManagedObjectContext) -> [Team] {
+        let teams = teams.map({
+            return Team.insert($0, in: context)
+        })
+
+        SearchService.addToSearchIndex(teams)
+
+        return teams
     }
 
     /**
@@ -71,7 +81,7 @@ extension Team: Locatable, Managed {
      - Returns: The inserted Team.
      */
     @discardableResult
-    static func insert(_ model: TBATeam, in context: NSManagedObjectContext) -> Team {
+    static func insert(_ model: TBATeam, in context: NSManagedObjectContext, shouldIndex: Bool = false) -> Team {
         let predicate = NSPredicate(format: "%K == %@",
                                     #keyPath(Team.key), model.key)
 
@@ -96,6 +106,10 @@ extension Team: Locatable, Managed {
             team.teamNumber = model.teamNumber as NSNumber
             team.website = model.website
             team.homeChampionship = model.homeChampionship
+
+            if shouldIndex {
+                SearchService.addToSearchIndex([team])
+            }
         }
     }
 
@@ -111,9 +125,7 @@ extension Team: Locatable, Managed {
             return
         }
 
-        self.events = NSSet(array: events.map({
-            return Event.insert($0, in: managedObjectContext)
-        }))
+        self.events = NSSet(array: Event.insert(events, in: managedObjectContext))
     }
 
     /**

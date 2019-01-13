@@ -61,7 +61,12 @@ class EventsContainerViewController: ContainerViewController {
     }
 
     @objc private func presentSearch() {
-        // Something here
+        let searchViewController = SearchViewController(persistentContainer: persistentContainer, tbaKit: tbaKit, userDefaults: userDefaults)
+        searchViewController.delegate = self
+
+        let nav = UINavigationController(rootViewController: searchViewController)
+        nav.modalPresentationStyle = .formSheet
+        navigationController?.present(nav, animated: true, completion: nil)
     }
 
 }
@@ -103,6 +108,18 @@ extension EventsContainerViewController: EventsViewControllerDelegate {
         let eventViewController = EventViewController(event: event, statusService: statusService, urlOpener: urlOpener, myTBA: myTBA, persistentContainer: persistentContainer, tbaKit: tbaKit, userDefaults: userDefaults)
         let nav = UINavigationController(rootViewController: eventViewController)
         navigationController?.showDetailViewController(nav, sender: nil)
+    }
+
+}
+
+extension EventsContainerViewController: SearchViewControllerDelegate {
+
+    func selectedEvent(_ event: Event) {
+        // Push to Event
+    }
+
+    func selectedTeam(_ team: Team) {
+        // Push to Team
     }
 
 }

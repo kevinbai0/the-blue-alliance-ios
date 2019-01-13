@@ -202,7 +202,7 @@ extension TeamInfoViewController: Refreshable {
             context.performChangesAndWait({
                 // TODO: Team never deleted
                 if let modelTeam = modelTeam {
-                    Team.insert(modelTeam, in: context)
+                    Team.insert(modelTeam, in: context, shouldIndex: true)
                 }
             }, saved: {
                 self.markTBARefreshSuccessful(self.tbaKit, request: request!)

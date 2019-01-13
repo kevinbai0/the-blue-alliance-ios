@@ -248,7 +248,7 @@ extension EventInfoViewController: Refreshable {
             context.performChangesAndWait({
                 // TODO: Event can never be deleted
                 if let modelEvent = modelEvent {
-                    Event.insert(modelEvent, in: context)
+                    Event.insert(modelEvent, in: context, shouldIndex: true)
                 }
             }, saved: {
                 self.markTBARefreshSuccessful(self.tbaKit, request: request!)

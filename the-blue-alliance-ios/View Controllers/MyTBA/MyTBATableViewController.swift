@@ -269,7 +269,7 @@ class MyTBATableViewController<T: MyTBAEntity & MyTBAManaged, J: MyTBAModel>: TB
 
             context.performChangesAndWait({
                 if let event = event {
-                    Event.insert(event, in: context)
+                    Event.insert(event, in: context, shouldIndex: true)
                 }
             }, saved: {
                 self.tbaKit.setLastModified(request!)
@@ -292,7 +292,7 @@ class MyTBATableViewController<T: MyTBAEntity & MyTBAManaged, J: MyTBAModel>: TB
             let context = self.persistentContainer.newBackgroundContext()
             context.performChangesAndWait({
                 if let team = team {
-                    Team.insert(team, in: context)
+                    Team.insert(team, in: context, shouldIndex: true)
                 }
             }, saved: {
                 self.tbaKit.setLastModified(request!)

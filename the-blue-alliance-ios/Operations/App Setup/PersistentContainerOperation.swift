@@ -15,16 +15,6 @@ class PersistentContainerOperation: TBAOperation {
     override func execute() {
         // persistentStore.setOption(coreSpotlightDelegate, forKey:NSCoreDataCoreSpotlightExporter)
         // persistentContainer.persistentStoreDescriptions = [persistentStore]
-        persistentContainer.persistentStoreDescriptions.forEach {
-            // Can we pass this up or no....?
-            let searchDelegate = SearchIndexDelegate(forStoreWith:$0, model: persistentContainer.managedObjectModel)
-            /*
-            searchDelegate.searchableIndex(CSSearchableIndex.default(), reindexAllSearchableItemsWithAcknowledgementHandler: {
-                print("Done")
-            })
-            */
-            $0.setOption(searchDelegate, forKey: NSCoreDataCoreSpotlightExporter)
-        }
         persistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
             // NSPersistentStoreDescription
             /*

@@ -112,9 +112,7 @@ extension District: Managed {
             return
         }
 
-        self.events = NSSet(array: events.map({
-            return Event.insert($0, in: managedObjectContext)
-        }))
+        self.events = NSSet(array: Event.insert(events, in: managedObjectContext))
     }
 
     /**
@@ -129,9 +127,7 @@ extension District: Managed {
             return
         }
 
-        self.teams = NSSet(array: teams.map({
-            return Team.insert($0, in: managedObjectContext)
-        }))
+        self.teams = NSSet(array: Team.insert(teams, in: managedObjectContext))
     }
 
     /**

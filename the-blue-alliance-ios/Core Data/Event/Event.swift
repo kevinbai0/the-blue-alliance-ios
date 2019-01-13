@@ -42,14 +42,22 @@ extension Event: Locatable, Managed {
         }
 
         // Insert new Events for this year
-        let events = events.map({
-            return Event.insert($0, in: context)
-        })
+        let events = Event.insert(events, in: context)
 
         // Delete orphaned Events for this year
         Set(oldEvents).subtracting(Set(events)).forEach({
             context.delete($0)
         })
+    }
+
+    static func insert(_ events: [TBAEvent], in context: NSManagedObjectContext) -> [Event] {
+        let events = events.map({
+            return Event.insert($0, in: context)
+        })
+
+        SearchService.addToSearchIndex(events)
+
+        return events
     }
 
     /**
@@ -64,7 +72,7 @@ extension Event: Locatable, Managed {
      - Returns: The inserted Event.
      */
     @discardableResult
-    static func insert(_ model: TBAEvent, in context: NSManagedObjectContext) -> Event {
+    static func insert(_ model: TBAEvent, in context: NSManagedObjectContext, shouldIndex: Bool = false) -> Event {
         let predicate = NSPredicate(format: "key == %@", model.key)
         return findOrCreate(in: context, matching: predicate) { (event) in
             // Required: endDate, eventCode, eventType, key, name, startDate, year
@@ -115,6 +123,10 @@ extension Event: Locatable, Managed {
             event.year = model.year as NSNumber
 
             event.hybridType = event.calculateHybridType()
+
+            if shouldIndex {
+                SearchService.addToSearchIndex([event])
+            }
         }
     }
 
@@ -312,9 +324,7 @@ extension Event: Locatable, Managed {
             return
         }
 
-        self.teams = NSSet(array: teams.map({
-            return Team.insert($0, in: managedObjectContext)
-        }))
+        self.teams = NSSet(array: Team.insert(teams, in: managedObjectContext))
     }
 
     /**
