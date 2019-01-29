@@ -15,6 +15,16 @@ class EventsContainerViewController: ContainerViewController {
         return UIBarButtonItem(image: UIImage(named: "ic_search_white"), style: .plain, target: self, action: #selector(presentSearch))
     }()
 
+    lazy private var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.placeholder = "Search Events and Teams"
+        searchController.searchBar.barTintColor = .primaryBlue
+        searchController.searchBar.tintColor = .white
+        searchController.delegate = self
+        return searchController
+    }()
+
     // MARK: - Init
 
     init(myTBA: MyTBA, statusService: StatusService, urlOpener: URLOpener, persistentContainer: NSPersistentContainer, tbaKit: TBAKit, userDefaults: UserDefaults) {
@@ -33,6 +43,7 @@ class EventsContainerViewController: ContainerViewController {
                    userDefaults: userDefaults)
 
         title = "Events"
+        definesPresentationContext = true
         tabBarItem.image = UIImage(named: "ic_event")
         navigationItem.rightBarButtonItem = searchBarButtonItem
 
@@ -61,12 +72,8 @@ class EventsContainerViewController: ContainerViewController {
     }
 
     @objc private func presentSearch() {
-        let searchViewController = SearchViewController(persistentContainer: persistentContainer, tbaKit: tbaKit, userDefaults: userDefaults)
-        searchViewController.delegate = self
-
-        let nav = UINavigationController(rootViewController: searchViewController)
-        nav.modalPresentationStyle = .formSheet
-        navigationController?.present(nav, animated: true, completion: nil)
+        tabBarController!.setTabBar(hidden: true)
+        present(searchController, animated: true)
     }
 
 }
@@ -120,6 +127,22 @@ extension EventsContainerViewController: SearchViewControllerDelegate {
 
     func selectedTeam(_ team: Team) {
         // Push to Team
+    }
+
+}
+
+extension EventsContainerViewController: UISearchControllerDelegate {
+
+    func willDismissSearchController(_ searchController: UISearchController) {
+        tabBarController!.setTabBar(hidden: false)
+    }
+
+}
+
+extension EventsContainerViewController: UISearchResultsUpdating {
+
+    func updateSearchResults(for searchController: UISearchController) {
+        // Fetch the bullshit we need to here...
     }
 
 }

@@ -13,8 +13,7 @@ class SearchViewController: TBATableViewController {
     lazy private var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
-        searchController.dimsBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Events and Teams"
         return searchController
     }()
 
@@ -41,9 +40,9 @@ class SearchViewController: TBATableViewController {
         tableView.registerReusableCell(EventTableViewCell.self)
         tableView.registerReusableCell(TeamTableViewCell.self)
 
-        tableView.tableHeaderView = searchController.searchBar
-
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissModal(_:)))
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
     }
 
     // MARK: - Table view data source
