@@ -7,7 +7,13 @@ protocol TeamSummaryViewControllerDelegate: AnyObject {
     func matchSelected(_ match: Match)
 }
 
-private enum TeamSummaryRow {
+private enum TeamSummarySections: Int, CaseIterable {
+    case info
+    case nextMatch
+    case lastMatch
+}
+
+private enum TeamSummaryInfoRow {
     case rank(rank: Int)
     case awards(count: Int)
     case pit // only during CMP, and if they exist
@@ -15,10 +21,6 @@ private enum TeamSummaryRow {
     case alliance(allianceStatus: String)
     case status(overallStatus: String)
     case breakdown(tiebreakerInfo: String)
-    case nextMatchKey(key: String)
-    case nextMatch(match: Match)
-    case lastMatchKey(key: String)
-    case lastMatch(match: Match)
 }
 
 class TeamSummaryViewController: TBATableViewController {
@@ -57,17 +59,38 @@ class TeamSummaryViewController: TBATableViewController {
         }
     }
 
-    fileprivate var summaryRows: [TeamSummaryRow] {
-        var summaryRows: [TeamSummaryRow] = []
+//    func matchForSection(section: Int) -> (String, Match?) {
+//        var section = section
+//        if eventStatus?.nextMatchKey == nil, section >= TeamSummarySections.nextMatch.rawValue {
+//            section += 1
+//        }
+//    }
+
+    var nextMatch: Match? {
+        if let nextMatchKey = eventStatus?.nextMatchKey, let match = Match.forKey(nextMatchKey, in: persistentContainer.viewContext) {
+            return match
+        }
+        return nil
+    }
+
+    var lastMatch: Match? {
+        if let lastMatchKey = eventStatus?.lastMatchKey, let match = Match.forKey(lastMatchKey, in: persistentContainer.viewContext) {
+            return match
+        }
+        return nil
+    }
+
+    fileprivate var summaryInfoRows: [TeamSummaryInfoRow] {
+        var infoRows: [TeamSummaryInfoRow] = []
 
         // Rank
         if let rank = eventStatus?.qual?.ranking?.rank {
-            summaryRows.append(TeamSummaryRow.rank(rank: rank.intValue))
+            infoRows.append(TeamSummaryInfoRow.rank(rank: rank.intValue))
         }
 
         // Awards
         if teamAwards.count > 0 {
-            summaryRows.append(TeamSummaryRow.awards(count: teamAwards.count))
+            infoRows.append(TeamSummaryInfoRow.awards(count: teamAwards.count))
         }
 
         // TODO: Add support for Pits
@@ -75,50 +98,25 @@ class TeamSummaryViewController: TBATableViewController {
 
         // Record
         if let record = eventStatus?.qual?.ranking?.record, event.year != 2015 {
-            summaryRows.append(TeamSummaryRow.record(wlt: record))
+            infoRows.append(TeamSummaryInfoRow.record(wlt: record))
         }
 
         // Alliance
         if let allianceStatus = eventStatus?.allianceStatus {
-            summaryRows.append(TeamSummaryRow.alliance(allianceStatus: allianceStatus))
+            infoRows.append(TeamSummaryInfoRow.alliance(allianceStatus: allianceStatus))
         }
 
         // Team Status
         if let overallStatus = eventStatus?.overallStatus {
-            summaryRows.append(TeamSummaryRow.status(overallStatus: overallStatus))
+            infoRows.append(TeamSummaryInfoRow.status(overallStatus: overallStatus))
         }
 
         // Breakdown
         if let tiebreakerInfo = eventStatus?.qual?.ranking?.tiebreakerInfoString {
-            summaryRows.append(TeamSummaryRow.breakdown(tiebreakerInfo: tiebreakerInfo))
+            infoRows.append(TeamSummaryInfoRow.breakdown(tiebreakerInfo: tiebreakerInfo))
         }
 
-        // From here on, we only show this data if the event is currently happening
-        guard event.isHappeningNow else {
-            return summaryRows
-        }
-
-        // Next Match
-        if let nextMatchKey = eventStatus?.nextMatchKey {
-            if let match = Match.forKey(nextMatchKey, in: persistentContainer.viewContext) {
-                summaryRows.append(TeamSummaryRow.nextMatch(match: match))
-            } else {
-                summaryRows.append(TeamSummaryRow.nextMatchKey(key: nextMatchKey))
-                fetchMatch(nextMatchKey)
-            }
-        }
-
-        // Last Match
-        if let lastMatchKey = eventStatus?.lastMatchKey {
-            if let match = Match.forKey(lastMatchKey, in: persistentContainer.viewContext) {
-                summaryRows.append(TeamSummaryRow.lastMatch(match: match))
-            } else {
-                summaryRows.append(TeamSummaryRow.lastMatchKey(key: lastMatchKey))
-                fetchMatch(lastMatchKey)
-            }
-        }
-
-        return summaryRows
+        return infoRows
     }
 
     // MARK: - Observable
@@ -160,45 +158,72 @@ class TeamSummaryViewController: TBATableViewController {
 
     // MARK: - Table view data source
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let rows: Int = summaryRows.count
-        if rows == 0 {
-            showNoDataView()
-        } else {
-            removeNoDataView()
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        // Only show next match/previous match if the event is currently being played
+        guard event.isHappeningNow else {
+            return 1
         }
-        return rows
+        var sections = TeamSummarySections.allCases.count
+        if eventStatus?.nextMatchKey == nil {
+            sections = sections - 1
+        }
+        if eventStatus?.lastMatchKey == nil {
+            sections = sections - 1
+        }
+        return sections
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            let rows: Int = summaryInfoRows.count
+            if rows == 0 {
+                showNoDataView()
+            } else {
+                removeNoDataView()
+            }
+            return rows
+        }
+        return 1 // 1 cell for next/last match
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = summaryRows[indexPath.row]
-        let cell: UITableViewCell = {
-            switch row {
-            case .rank(let rank):
-                return self.tableView(tableView, cellForRank: rank, at: indexPath)
-            case .awards(let count):
-                return self.tableView(tableView, cellForAwardCount: count, at: indexPath)
-            case .record(let record):
-                return self.tableView(tableView, cellForRecord: record, at: indexPath)
-            case .alliance(let allianceStatus):
-                return self.tableView(tableView, cellForAllianceStatus: allianceStatus, at: indexPath)
-            case .status(let status):
-                return self.tableView(tableView, cellForStatus: status, at: indexPath)
-            case .breakdown(let breakdown):
-                return self.tableView(tableView, cellForBreakdown: breakdown, at: indexPath)
-            case .nextMatchKey(let key):
-                return self.tableView(tableView, loadingCellForKey: key, at: indexPath)
-            case .nextMatch(let match):
+        if indexPath.row == 0 {
+            let row = summaryInfoRows[indexPath.row]
+            let cell: UITableViewCell = {
+                switch row {
+                case .rank(let rank):
+                    return self.tableView(tableView, cellForRank: rank, at: indexPath)
+                case .awards(let count):
+                    return self.tableView(tableView, cellForAwardCount: count, at: indexPath)
+                case .record(let record):
+                    return self.tableView(tableView, cellForRecord: record, at: indexPath)
+                case .alliance(let allianceStatus):
+                    return self.tableView(tableView, cellForAllianceStatus: allianceStatus, at: indexPath)
+                case .status(let status):
+                    return self.tableView(tableView, cellForStatus: status, at: indexPath)
+                case .breakdown(let breakdown):
+                    return self.tableView(tableView, cellForBreakdown: breakdown, at: indexPath)
+                default:
+                    return UITableViewCell()
+                }
+            }()
+            return cell
+        } else if indexPath.row == 1, let nexMatchKey = eventStatus?.nextMatchKey {
+            if let match = nextMatch {
                 return self.tableView(tableView, cellForMatch: match, at: indexPath)
-            case .lastMatchKey(let key):
-                return self.tableView(tableView, loadingCellForKey: key, at: indexPath)
-            case .lastMatch(let match):
-                return self.tableView(tableView, cellForMatch: match, at: indexPath)
-            default:
-                return UITableViewCell()
+            } else {
+                return self.tableView(tableView, loadingCellForKey: nexMatchKey, at: indexPath)
             }
-        }()
-        return cell
+        } else if (indexPath.row == 2 || (indexPath.section == 1 && eventStatus?.nextMatchKey == nil)), let lastMatchKey = eventStatus?.lastMatchKey {
+            if let match = lastMatch {
+                return self.tableView(tableView, cellForMatch: match, at: indexPath)
+            } else {
+                return self.tableView(tableView, loadingCellForKey: lastMatchKey, at: indexPath)
+            }
+        } else {
+            // fatalError("Unsupported team summary section")
+            return UITableViewCell()
+        }
     }
 
     private func tableView(_ tableView: UITableView, cellForRank rank: Int, at indexPath: IndexPath) -> UITableViewCell {
@@ -252,27 +277,39 @@ class TeamSummaryViewController: TBATableViewController {
         return cell
     }
 
+    // MARK: - Table View Delegate
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == TeamSummarySections.nextMatch.rawValue {
+            return "Next Match"
+        } else if section == TeamSummarySections.lastMatch.rawValue {
+            return "Most Recent Match"
+        }
+        return nil
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        let rowType = summaryRows[indexPath.row]
-        switch rowType {
-        case .awards:
-            delegate?.awardsSelected()
-        case .nextMatch(let match), .lastMatch(let match):
-            delegate?.matchSelected(match)
-        default:
-            break
+        if indexPath.section == 0 {
+            let rowType = summaryInfoRows[indexPath.row]
+            switch rowType {
+            case .awards:
+                delegate?.awardsSelected()
+            default:
+                break
+            }
+        } else if indexPath.section == 1 {
+            // delegate?.matchSelected(match)
+        } else if indexPath.section == 2 {
+            // delegate?.matchSelected(match)
         }
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = summaryRows[indexPath.row]
-        switch row {
-        case .nextMatchKey, .lastMatchKey:
-            return 44.0
-        default:
+        if indexPath.section == 0 {
             return UITableView.automaticDimension
+        } else {
+            return 44.0
         }
     }
 
