@@ -127,3 +127,11 @@ extension EventViewController: MatchesViewControllerDelegate {
     }
 
 }
+
+extension EventViewController: MatchQueryOptionsDelegate {
+
+    func updateQuery(query: MatchQueryOptions) {
+        matchesViewController.updateWithQuery(query: query)
+    }
+
+}

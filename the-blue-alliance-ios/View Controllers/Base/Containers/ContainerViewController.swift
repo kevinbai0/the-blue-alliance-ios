@@ -6,6 +6,10 @@ protocol NavigationTitleDelegate: AnyObject {
     func navigationTitleTapped()
 }
 
+protocol ContainerDelegate: AnyObject {
+    func changedContainedViewController(viewController: UIViewController)
+}
+
 typealias ContainableViewController = UIViewController & Refreshable & Persistable
 
 class ContainerViewController: UIViewController, Persistable, Alertable {
@@ -66,6 +70,7 @@ class ContainerViewController: UIViewController, Persistable, Alertable {
         return navigationSubtitleLabel
     }()
     weak var navigationTitleDelegate: NavigationTitleDelegate?
+    weak var containerDelegate: ContainerDelegate?
 
     private let shouldShowSegmentedControl: Bool = false
     private lazy var segmentedControlView: UIView = {
@@ -245,6 +250,7 @@ class ContainerViewController: UIViewController, Persistable, Alertable {
     private func updateSegmentedControlViews() {
         if let viewController = currentViewController() {
             show(view: viewController.view)
+            containerDelegate?.changedContainedViewController(viewController: viewController)
         }
     }
 

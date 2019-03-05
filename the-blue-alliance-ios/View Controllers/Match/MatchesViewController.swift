@@ -11,6 +11,8 @@ class MatchesViewController: TBATableViewController {
     private let event: Event
     private let teamKey: TeamKey?
 
+    private var query: MatchQueryOptions = MatchQueryOptions(sort: MatchQueryOptions.MatchSortOptions(reverse: false), filter: MatchQueryOptions.MatchFilterOptions(favorites: false))
+
     weak var delegate: MatchesViewControllerDelegate?
     private var dataSource: TableViewDataSource<Match, MatchesViewController>!
 
@@ -33,9 +35,6 @@ class MatchesViewController: TBATableViewController {
 
     private func setupDataSource() {
         let fetchRequest: NSFetchRequest<Match> = Match.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "compLevelSortOrder", ascending: true),
-                                        NSSortDescriptor(key: "setNumber", ascending: true),
-                                        NSSortDescriptor(key: "matchNumber", ascending: true)]
         setupFetchRequest(fetchRequest)
 
         let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: persistentContainer.viewContext, sectionNameKeyPath: "compLevelSortOrder", cacheName: nil)
@@ -47,6 +46,11 @@ class MatchesViewController: TBATableViewController {
     }
 
     private func setupFetchRequest(_ request: NSFetchRequest<Match>) {
+        let ascending = !query.sort.reverse
+        request.sortDescriptors = [NSSortDescriptor(key: "compLevelSortOrder", ascending: ascending),
+                                   NSSortDescriptor(key: "setNumber", ascending: ascending),
+                                   NSSortDescriptor(key: "matchNumber", ascending: ascending)]
+
         if let teamKey = teamKey {
             request.predicate = NSPredicate(format: "event == %@ AND SUBQUERY(alliances, $a, ANY $a.teams.key == %@).@count > 0", event, teamKey.key!)
         } else {
@@ -63,6 +67,11 @@ class MatchesViewController: TBATableViewController {
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30.0
+    }
+
+    func updateWithQuery(query: MatchQueryOptions) {
+        self.query = query
+        updateDataSource()
     }
 
 }
@@ -129,6 +138,22 @@ extension MatchesViewController: Stateful {
 
     var noDataText: String {
         return "No matches for event"
+    }
+
+}
+
+extension MatchesViewController: UISearchResultsUpdating {
+
+    func updateSearchResults(for searchController: UISearchController) {
+        // Pass
+    }
+
+}
+
+extension MatchesViewController: UISearchBarDelegate {
+
+    public func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        // Present filter
     }
 
 }

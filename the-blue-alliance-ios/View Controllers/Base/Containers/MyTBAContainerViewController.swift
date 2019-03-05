@@ -10,6 +10,11 @@ class MyTBAContainerViewController: ContainerViewController, Subscribable {
         return UIBarButtonItem(image: UIImage(named: "ic_star"), style: .plain, target: self, action: #selector(myTBAPreferencesTapped))
     }()
 
+    // TODO: Move out of MyTBAContainerViewController
+    lazy var matchQueryBarButtonItem: UIBarButtonItem = {
+        return UIBarButtonItem(image: UIImage(named: "ic_filter"), style: .plain, target: self, action: #selector(matchQueryTapped))
+    }()
+
     var subscribableModel: MyTBASubscribable {
         fatalError("Implement subscribableModel in subclass")
     }
@@ -21,9 +26,11 @@ class MyTBAContainerViewController: ContainerViewController, Subscribable {
 
         super.init(viewControllers: viewControllers, navigationTitle: navigationTitle, navigationSubtitle: navigationSubtitle, segmentedControlTitles: segmentedControlTitles, persistentContainer: persistentContainer, tbaKit: tbaKit, userDefaults: userDefaults)
 
-        updateFavoriteButton()
+        updateBarButtonItems()
 
         myTBA.authenticationProvider.add(observer: self)
+
+        containerDelegate = self
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -32,16 +39,29 @@ class MyTBAContainerViewController: ContainerViewController, Subscribable {
 
     // MARK: - Interface Methods
 
-    func updateFavoriteButton() {
-        if myTBA.isAuthenticated, navigationItem.rightBarButtonItem == nil {
-            navigationItem.rightBarButtonItem = favoriteBarButtonItem
-        } else if !myTBA.isAuthenticated, navigationItem.rightBarButtonItem != nil {
-            navigationItem.rightBarButtonItem = nil
+    func updateBarButtonItems(showingMatches: Bool = false) {
+        var barButtonItems: [UIBarButtonItem] = []
+        if myTBA.isAuthenticated {
+            barButtonItems.append(favoriteBarButtonItem)
         }
+        if showingMatches {
+            barButtonItems.append(matchQueryBarButtonItem)
+        }
+        navigationItem.rightBarButtonItems = barButtonItems
     }
 
     @objc func myTBAPreferencesTapped() {
         presentMyTBAPreferences()
+    }
+
+    @objc func matchQueryTapped() {
+        let queryViewController = MatchQueryOptionsViewController(persistentContainer: persistentContainer, tbaKit: tbaKit, userDefaults: userDefaults)
+        queryViewController.delegate = self as! MatchQueryOptionsDelegate
+
+        let nav = UINavigationController(rootViewController: queryViewController)
+        nav.modalPresentationStyle = .formSheet
+
+        navigationController?.present(nav, animated: true, completion: nil)
     }
 
 }
@@ -49,11 +69,19 @@ class MyTBAContainerViewController: ContainerViewController, Subscribable {
 extension MyTBAContainerViewController: MyTBAAuthenticationObservable {
 
     func authenticated() {
-        updateFavoriteButton()
+        updateBarButtonItems()
     }
 
     func unauthenticated() {
-        updateFavoriteButton()
+        updateBarButtonItems()
+    }
+
+}
+
+extension MyTBAContainerViewController: ContainerDelegate {
+
+    func changedContainedViewController(viewController: UIViewController) {
+        updateBarButtonItems(showingMatches: viewController is MatchesViewController)
     }
 
 }
