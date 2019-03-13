@@ -81,13 +81,13 @@ extension EventRanking: Managed {
                 return EventRankingStatInfo.insert($0, in: context)
             }))
             ranking.updateToManyRelationship(relationship: #keyPath(EventRanking.extraStats), newValues: model.extraStats?.map({
-                return EventRankingStat.insert(value: $0, in: context)
+                return EventRankingStat.insert(value: $0, extraStatsRanking: ranking, in: context)
             }))
             ranking.updateToManyRelationship(relationship: #keyPath(EventRanking.sortOrdersInfo), newValues: sortOrderInfo?.map({
                 return EventRankingStatInfo.insert($0, in: context)
             }))
             ranking.updateToManyRelationship(relationship: #keyPath(EventRanking.sortOrders), newValues: model.sortOrders?.map({
-                return EventRankingStat.insert(value: $0, in: context)
+                return EventRankingStat.insert(value: $0, sortOrderRanking: ranking, in: context)
             }))
         })
     }
