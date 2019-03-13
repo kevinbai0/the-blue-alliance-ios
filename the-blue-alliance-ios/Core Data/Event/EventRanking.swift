@@ -111,10 +111,45 @@ extension EventRanking: Managed {
             }
         }
 
-        // I honeslty don't think we can do these together - I think we have to do them seperate and check both.
-        let statsInfoMutableSet = NSMutableSet(array: extraStatsInfoArray ?? [])
-        statsInfoMutableSet.addObjects(from: sortOrdersInfoArray ?? [])
-        let statsInfoSet = statsInfoMutableSet as! Set<EventRankingStatInfo>
+        // Loop twice - once to cleanup our relationships, once to delete.
+        // Note to Zach: Test this with only one loop and confirm it doesn't work
+        extraStatsInfoArray?.forEach({
+            guard let extraStatsRankings = $0.extraStatsRankings else {
+                return
+            }
+            if extraStatsRankings.onlyObject(self) {
+                // Only mark for deletion if our sets are thinned out
+                guard let sortOrderRankings = $0.sortOrdersRankings else {
+                    // No sortOrderRankings - we're good for deletion
+                    managedObjectContext?.delete($0)
+                    return
+                }
+                if sortOrderRankings.onlyObject(self) || sortOrderRankings.count == 0 {
+                    managedObjectContext?.delete($0)
+                }
+            } else {
+                $0.removeFromExtraStatsRankings(self)
+            }
+        })
+
+        // Same as above (hopefully)
+        sortOrdersInfoArray?.forEach({
+            guard let sortOrderRankings = $0.sortOrdersRankings else {
+                return
+            }
+            if sortOrderRankings.onlyObject(self) {
+                guard let extraStatsRankings = $0.extraStatsRankings else {
+                    // No extraStatsRankings - we're good for deletion
+                    managedObjectContext?.delete($0)
+                    return
+                }
+                if extraStatsRankings.onlyObject(self) || extraStatsRankings.count == 0 {
+                    managedObjectContext?.delete($0)
+                }
+            } else {
+                $0.removeFromSortOrdersRankings(self)
+            }
+        })
     }
 
 }
