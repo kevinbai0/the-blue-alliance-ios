@@ -38,7 +38,13 @@ struct RankingCellViewModel {
 
         detailText = eventRanking.rankingInfoString
 
-        wltText = eventRanking.record?.displayString()
+        wltText = {
+            if let qualAverage = eventRanking.qualAverage {
+                return qualAverage.stringValue
+            } else {
+                return eventRanking.record?.stringValue
+            }
+        }()
     }
 
     init(eventTeamStat: EventTeamStat) {

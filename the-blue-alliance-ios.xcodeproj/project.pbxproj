@@ -147,6 +147,7 @@
 		929FCD9A1EC7F52700A38E46 /* DistrictsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929FCD991EC7F52700A38E46 /* DistrictsViewController.swift */; };
 		92A04B8D2238641C00F3599E /* EventRankingStatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A04B8C2238641C00F3599E /* EventRankingStatTests.swift */; };
 		92A04B8F2238644000F3599E /* EventRankingStatInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A04B8E2238644000F3599E /* EventRankingStatInfoTests.swift */; };
+		92A04B912238868900F3599E /* WLTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A04B902238868900F3599E /* WLTTests.swift */; };
 		92A2F5542156BD4B00267C63 /* NSManagedObjectContext+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A2F5532156BD4B00267C63 /* NSManagedObjectContext+ExtensionTests.swift */; };
 		92A321C7214EF83800FDADFB /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A321C6214EF83800FDADFB /* SettingsViewController.swift */; };
 		92A4147C216DA76400E459A5 /* ReactNativeService_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A4147B216DA76400E459A5 /* ReactNativeService_Tests.swift */; };
@@ -515,6 +516,7 @@
 		929FCD991EC7F52700A38E46 /* DistrictsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DistrictsViewController.swift; sourceTree = "<group>"; };
 		92A04B8C2238641C00F3599E /* EventRankingStatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRankingStatTests.swift; sourceTree = "<group>"; };
 		92A04B8E2238644000F3599E /* EventRankingStatInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRankingStatInfoTests.swift; sourceTree = "<group>"; };
+		92A04B902238868900F3599E /* WLTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WLTTests.swift; sourceTree = "<group>"; };
 		92A2F5532156BD4B00267C63 /* NSManagedObjectContext+ExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+ExtensionTests.swift"; sourceTree = "<group>"; };
 		92A321C6214EF83800FDADFB /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		92A4147B216DA76400E459A5 /* ReactNativeService_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactNativeService_Tests.swift; sourceTree = "<group>"; };
@@ -977,6 +979,7 @@
 				14B520F6218CA28B00F2EF4F /* EventStatusAllianceTests.swift */,
 				14B520F8218CB19400F2EF4F /* EventStatusPlayoffTests.swift */,
 				1416D50D218E4B8200F1A4A3 /* EventTeamStatsTests.swift */,
+				92A04B902238868900F3599E /* WLTTests.swift */,
 				925908AA21828CC300D7BFCE /* WebcastTests.swift */,
 			);
 			path = Event;
@@ -2473,6 +2476,7 @@
 				92C8CE5621AEF1AE00683558 /* TeamViewControllerTests.swift in Sources */,
 				927EAAC021A88AF10068FD96 /* MyTBARegisterTests.swift in Sources */,
 				923AEE99216703CB00EF50C8 /* MyTBATests.swift in Sources */,
+				92A04B912238868900F3599E /* WLTTests.swift in Sources */,
 				92F38537217D31CE00A9AC02 /* AwardRecipientTests.swift in Sources */,
 				92B076F120FF8E8400F9B2D7 /* MyTBASignOutOperation_Tests.swift in Sources */,
 				925908B52185076100D7BFCE /* EventAllianceTests.swift in Sources */,
