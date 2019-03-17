@@ -29,8 +29,10 @@ target 'The Blue Alliance' do
 
   # Deps
   pod 'BFRImageViewer'
+  pod 'google-cast-sdk'
   pod 'PINRemoteImage', '3.0.0-beta.13'
   pod 'PureLayout'
+  pod 'Reveal-SDK', :configurations => ['Debug']
   pod 'youtube-ios-player-helper'
   pod 'Zip', '~> 1.1'
 

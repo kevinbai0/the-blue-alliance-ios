@@ -85,6 +85,11 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - google-cast-sdk (4.3.5):
+    - google-cast-sdk/Core (= 4.3.5)
+    - Protobuf (~> 3.0)
+  - google-cast-sdk/Core (4.3.5):
+    - Protobuf (~> 3.0)
   - GoogleAppMeasurement (5.6.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
     - GoogleUtilities/MethodSwizzler (~> 5.2)
@@ -158,53 +163,54 @@ PODS:
     - PINRemoteImage/Core
   - Protobuf (3.6.1)
   - PureLayout (3.1.4)
-  - React/Core (0.59.0):
-    - yoga (= 0.59.0.React)
-  - React/CxxBridge (0.59.0):
+  - React/Core (0.59.0-rc.3):
+    - yoga (= 0.59.0-rc.3.React)
+  - React/CxxBridge (0.59.0-rc.3):
     - Folly (= 2018.10.22.00)
     - React/Core
     - React/cxxreact
     - React/jsiexecutor
-  - React/cxxreact (0.59.0):
+  - React/cxxreact (0.59.0-rc.3):
     - boost-for-react-native (= 1.63.0)
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
     - React/jsinspector
-  - React/DevSupport (0.59.0):
+  - React/DevSupport (0.59.0-rc.3):
     - React/Core
     - React/RCTWebSocket
-  - React/fishhook (0.59.0)
-  - React/jsi (0.59.0):
+  - React/fishhook (0.59.0-rc.3)
+  - React/jsi (0.59.0-rc.3):
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
-  - React/jsiexecutor (0.59.0):
+  - React/jsiexecutor (0.59.0-rc.3):
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
     - React/cxxreact
     - React/jsi
-  - React/jsinspector (0.59.0)
-  - React/RCTBlob (0.59.0):
+  - React/jsinspector (0.59.0-rc.3)
+  - React/RCTBlob (0.59.0-rc.3):
     - React/Core
-  - React/RCTImage (0.59.0):
+  - React/RCTImage (0.59.0-rc.3):
     - React/Core
     - React/RCTNetwork
-  - React/RCTNetwork (0.59.0):
+  - React/RCTNetwork (0.59.0-rc.3):
     - React/Core
-  - React/RCTText (0.59.0):
+  - React/RCTText (0.59.0-rc.3):
     - React/Core
-  - React/RCTWebSocket (0.59.0):
+  - React/RCTWebSocket (0.59.0-rc.3):
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - Reveal-SDK (21)
   - TBAKit (1.0.0-LOCAL)
   - TBAKit/Tests (1.0.0-LOCAL):
     - TBAKitTesting
   - TBAKitTesting (1.0.0-LOCAL):
     - TBAKit
-  - yoga (0.59.0.React)
+  - yoga (0.59.0-rc.3.React)
   - youtube-ios-player-helper (0.1.6)
   - Zip (1.1.0)
 
@@ -221,6 +227,7 @@ DEPENDENCIES:
   - Firebase/Storage
   - Folly (from `subtrees/the-blue-alliance-react/node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `subtrees/the-blue-alliance-react/node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - google-cast-sdk
   - GoogleSignIn
   - iOSSnapshotTestCase (= 4.0.1)
   - PINRemoteImage (= 3.0.0-beta.13)
@@ -232,6 +239,7 @@ DEPENDENCIES:
   - React/RCTNetwork (from `subtrees/the-blue-alliance-react/node_modules/react-native`)
   - React/RCTText (from `subtrees/the-blue-alliance-react/node_modules/react-native`)
   - React/RCTWebSocket (from `subtrees/the-blue-alliance-react/node_modules/react-native`)
+  - Reveal-SDK
   - TBAKit (from `the-blue-alliance-ios/Frameworks/TBAKit`)
   - TBAKit/Tests (from `the-blue-alliance-ios/Frameworks/TBAKit`)
   - TBAKitTesting (from `the-blue-alliance-ios/Frameworks/TBAKit`)
@@ -258,6 +266,7 @@ SPEC REPOS:
     - FirebaseRemoteConfig
     - FirebaseStorage
     - FLAnimatedImage
+    - google-cast-sdk
     - GoogleAppMeasurement
     - GoogleSignIn
     - GoogleToolboxForMac
@@ -270,6 +279,7 @@ SPEC REPOS:
     - PINRemoteImage
     - Protobuf
     - PureLayout
+    - Reveal-SDK
     - youtube-ios-player-helper
     - Zip
 
@@ -310,6 +320,7 @@ SPEC CHECKSUMS:
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   Folly: de497beb10f102453a1afa9edbf8cf8a251890de
   glog: aefd1eb5dda2ab95ba0938556f34b98e2da3a60d
+  google-cast-sdk: 462e10c781ea8ad480d2e16200bb8584ef067e07
   GoogleAppMeasurement: 008e04ecd8efedd97a693aea8634aefe220bd26e
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
@@ -322,13 +333,14 @@ SPEC CHECKSUMS:
   PINRemoteImage: d6d51c5d2adda55f1ce30c96e850b6c4ebd2856a
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
   PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
-  React: 0d6c719d9549bea0bd5676f8170b0e5c56e2c3c7
+  React: e18068c843db92d5761d2d05a485c85c430727da
+  Reveal-SDK: 3523e0eb7c562811c51bb71da6e523a6373702c8
   TBAKit: 9557aab044f45980b4a9526d4584f39b164b3c5f
   TBAKitTesting: 01b73a1f8deecf223819d4ba5c90360f0c8a50a5
-  yoga: 26673abd38bbdf0c33e134ad9e690c5fbf16e8fc
+  yoga: 4d7f00d234c42cf46c609ee1e429c987167b30f1
   youtube-ios-player-helper: 21ab92db027c7ff86cb17a3843a3f6eafc8158d2
   Zip: 8877eede3dda76bcac281225c20e71c25270774c
 
-PODFILE CHECKSUM: 40d3880e95712e7aee4e527321f27cabe820a3ef
+PODFILE CHECKSUM: 567134237d0b3d49e850cc97504af15047524e9b
 
 COCOAPODS: 1.6.1

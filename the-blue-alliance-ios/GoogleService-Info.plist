@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>836511118694-aj54f0d17nui5453fe0rbj230cqto6sl.apps.googleusercontent.com</string>
+	<string>244307294958-mm07e86269vaqhug86v3piot5ndt2va9.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.836511118694-aj54f0d17nui5453fe0rbj230cqto6sl</string>
+	<string>com.googleusercontent.apps.244307294958-mm07e86269vaqhug86v3piot5ndt2va9</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAQFG-f7RWd4g1sFSiRmTvADi2emrvBS0w</string>
+	<string>AIzaSyCAN84c4HZhBUyy6nV8OjuXguwAourPN7A</string>
 	<key>GCM_SENDER_ID</key>
-	<string>836511118694</string>
+	<string>244307294958</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.the-blue-alliance.tba</string>
+	<string>com.the-blue-alliance.zach-dev</string>
 	<key>PROJECT_ID</key>
-	<string>tbatv-prod-hrd</string>
+	<string>zach-tba-dev</string>
 	<key>STORAGE_BUCKET</key>
-	<string>tbatv-prod-hrd.appspot.com</string>
+	<string>zach-tba-dev.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true></true>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:836511118694:ios:962716d5bcf2e8c5</string>
+	<string>1:244307294958:ios:58cf1a6d9b13e4d6</string>
 	<key>DATABASE_URL</key>
-	<string>https://tbatv-prod-hrd.firebaseio.com</string>
+	<string>https://zach-tba-dev.firebaseio.com</string>
 </dict>
 </plist>

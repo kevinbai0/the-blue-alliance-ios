@@ -7,7 +7,7 @@ public typealias MyTBARequestCompletionBlock = (_ data: Data?, _ error: Error?) 
 
 private struct Constants {
     struct APIConstants {
-        static let baseURL = URL(string: "https://tbatv-prod-hrd.appspot.com/clientapi/tbaClient/v9/")!
+        static let baseURL = URL(string: "https://zach-tba-dev.appspot.com/clientapi/tbaClient/v9/")!
     }
 }
 

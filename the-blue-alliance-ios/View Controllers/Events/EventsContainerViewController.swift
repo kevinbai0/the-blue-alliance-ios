@@ -1,5 +1,6 @@
 import CoreData
 import Firebase
+import GoogleCast
 import Foundation
 import TBAKit
 import UIKit
@@ -36,6 +37,10 @@ class EventsContainerViewController: ContainerViewController {
         navigationTitleDelegate = self
         eventsViewController.delegate = self
         eventsViewController.weekEventsDelegate = self
+
+        let castButton = GCKUICastButton(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
+        castButton.tintColor = UIColor.white
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: castButton)
     }
 
     required init?(coder aDecoder: NSCoder) {

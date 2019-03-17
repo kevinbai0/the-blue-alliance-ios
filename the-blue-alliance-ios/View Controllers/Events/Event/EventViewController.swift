@@ -76,6 +76,32 @@ class EventViewController: MyTBAContainerViewController, EventStatusSubscribable
         }
     }
 
+    func googleCastWebcast() {
+        let url = URL.init(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
+
+        guard let mediaURL = url else {
+            print("invalid mediaURL")
+            return
+        }
+
+        /*
+        let mediaInfoBuilder = GCKMediaInformationBuilder.init(contentURL: mediaURL)
+        mediaInfoBuilder.streamType = GCKMediaStreamType.none;
+        mediaInfoBuilder.contentType = "video/mp4"
+        mediaInfoBuilder.metadata = metadata;
+        mediaInformation = mediaInfoBuilder.build()
+
+        guard let mediaInfo = mediaInformation else {
+            print("invalid mediaInformation")
+            return
+        }
+
+        if let request = sessionManager.currentSession?.remoteMediaClient?.loadMedia(mediaInfo) {
+            request.delegate = self
+        }
+        */
+    }
+
 }
 
 extension EventViewController: EventInfoViewControllerDelegate {

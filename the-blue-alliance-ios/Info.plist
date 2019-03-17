@@ -39,7 +39,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.8</string>
+	<string>73.32.23</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -47,7 +47,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.836511118694-aj54f0d17nui5453fe0rbj230cqto6sl</string>
+				<string>com.googleusercontent.apps.244307294958-mm07e86269vaqhug86v3piot5ndt2va9</string>
 			</array>
 		</dict>
 	</array>

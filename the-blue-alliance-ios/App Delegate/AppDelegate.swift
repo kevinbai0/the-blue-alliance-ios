@@ -3,6 +3,7 @@ import Crashlytics
 import Firebase
 import FirebaseAuth
 import FirebaseMessaging
+import GoogleCast
 import GoogleSignIn
 import TBAKit
 import UIKit
@@ -120,6 +121,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.setupAppearance()
+
+        // Google Cast nonsense Ours: 52B0EBA6 | Default: 2384539C
+        let criteria = GCKDiscoveryCriteria(applicationID: "52B0EBA6")
+        let options = GCKCastOptions(discoveryCriteria: criteria)
+        GCKCastContext.setSharedInstanceWith(options)
+
+        // Enable logger.
+        let logFilter = GCKLoggerFilter()
+        logFilter.minimumLevel = .verbose
+        GCKLogger.sharedInstance().filter = logFilter
+        GCKLogger.sharedInstance().delegate = self
 
         // Setup a dummy launch screen in our window while we're doing setup tasks
         window = UIWindow()
@@ -436,6 +448,14 @@ extension AppDelegate: UISplitViewControllerDelegate {
         }
 
         return emptyNavigationController
+    }
+
+}
+
+extension AppDelegate: GCKLoggerDelegate {
+
+    func logMessage(_ message: String, at level: GCKLoggerLevel, fromFunction function: String, location: String) {
+        print("[Google Cast] \(function) - \(message)")
     }
 
 }
